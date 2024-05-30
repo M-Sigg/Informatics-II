@@ -1,0 +1,249 @@
+
+\subsection{Divide and Conquer}
+
+Designing algorithms
+\begin{itemize}
+    \item Recursive algorithms: divide-and-conquer approach
+    \item Principle: if problem size is small enough to be solved trivially then solve it; else
+    \begin{enumerate}
+        \item \textbf{Divide} problem into a number of subproblems
+        \item \textbf{Conquer} subproblems by solving them recursively
+        \item \textbf{Combine} solutions of the subproblems into solution for the original problem
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{Merge Sort}
+Rough idea:
+\begin{itemize}
+    \item To sort an $n$-element sequence proceed as follows
+    \begin{itemize}
+        \item \textbf{Divide}: divide the sequence into two $n/2$-element sequences
+        \item \textbf{Conquer}: sort the two sequences recursively using merge sort
+        \item \textbf{Combine}: merge the two sorted sequences to produce the solution
+    \end{itemize}
+    \item Recursion stops when the sequence has length 1
+\end{itemize}
+
+\begin{center}
+\begin{minipage}{0.6\textwidth} % Adjust the width as needed
+\centering % Center the content within the minipage
+\begin{algorithm}[H]
+\caption{MergeSort(A,l,r)}
+\KwIn{array $A[l..r]$}
+\KwOut{permuted array $A[l..r]$ that is sorted in increasing order}
+\If{$l<r$} {
+$m= \lfloor (l+r)/2 \rfloor$\;
+MergeSort(A,l,m)\;
+MergeSort(A,m+1,r)\;
+Merge(A,l,r,m)\;
+}
+\end{algorithm}
+\end{minipage}
+\end{center}
+
+\begin{center}
+\begin{minipage}{0.6\textwidth} % Adjust the width as needed
+\centering % Center the content within the minipage
+\begin{algorithm}[H]
+\caption{Merge(A,l,r,m)}
+\KwIn{array A; indexes l,r, and m from MergeSort}
+\KwOut{$A[l,,r]$ is sorted in increasing order}
+\For{$i = l$ \KwTo $m$}{
+    $B[i] = A[i]$\;
+}
+\For{$i = m+1$ \KwTo $r$}{
+    $B[r+m-i+1] = A[i]$\;
+}
+$i = l$; $j = r$\;
+\For{$k = l$ \KwTo $r$}{
+    \uIf{$B[i] < B[j]$}{
+        $A[k] = B[i]$\;
+        $i = i + 1$\;
+    }
+    \Else{
+        $A[k] = B[j]$\;
+        $j = j - 1$\;
+    }
+}
+\end{algorithm}
+\end{minipage}
+\end{center}
+
+Running time may be calculate via several methods. See below.
+
+
+\subsection{Recurrences}
+
+Running times of algorithms with recursive calls can be described using recurrences.\\
+
+\subsubsection{Repeated (backward) substitution}
+\begin{itemize}
+    \item Not a strict formal proof
+    \item Procedure
+    \begin{itemize}
+        \item Substitute, expand, substitute, etc.
+        \item Observe a pattern and determine the expression after the $i$-th substitution
+        \item Find out what the highest value of $i$ should be to get the base case of the recurrence
+        \item Insert the cost of the base case and the expression for $i$ into the observed expression
+    \end{itemize}
+\end{itemize}
+
+\underline{Example:} Merge Sort
+\begin{itemize}
+    \item For $n>1$, let $T(n)=2T(n/2)+cn$
+    \item Apply repeated substitution
+    \begin{align*}
+        T(n) &= 2\textcolor{red}{T(n/2)} + cn && \text{(substitute)} \\   
+        &= 2(\textcolor{red}{2T(n/4)+cn/2})+cn &&\text{(expand)}\\
+        &= 4\textcolor{blue}{T(n/4)} + 2cn &&\text{(substitute)} \\
+        &= 4(\textcolor{blue}{2T(n/8)+cn/4})+2cn &&\text{(expand)}\\
+        &= 8T(n/8)+3cn &&\text{{find pattern}} \\
+        &= 2^iT(n/2^{i})+icn
+    \end{align*}
+    \item Calculate max $i$:
+    \begin{align*}
+        \frac{n}{2^{i}} &= 1\\
+        \Rightarrow i &= \log_2 n = i_{max}
+    \end{align*}
+    \item Insert into pattern:\[
+    2^{\log_2 n} T(n/2^{\log_2 n}) + cn \log_2 n= nT(1)+cn \log_2 n = \boxed{\Theta(n \log_2 n)}
+    \]
+\end{itemize}
+
+\subsubsection{Substitution method}
+Basic methodology
+\begin{enumerate}
+    \item Guess the form of the solution 
+    \item User induction to prove the solution
+\end{enumerate}
+
+\underline{Example:} \\
+
+Proof by induction
+\begin{itemize}
+    \item Need to show that $\overbrace{T(n)\leq cn^3}^\text{hypothesis}$ for $T(n)=4T(n/2)+n$
+    \begin{align*}
+        T(n) &= 4T(n/2)+n &&\text{(recurrence)}\\
+        &\leq 4c(n/2)^3 + n &&\text{(inductive hyp.)}\\
+        &=cn^3/2 + n &&\text{(simplification)}\\
+        &= cn^3 -\underbrace{(cn^3/2-n)}_{\geq 0} &&\text{(rearrangement)}\\
+        &\leq cn^3 &&\text{(for $c\geq2, n\geq1$)}
+    \end{align*}
+    \item It follows that $T(n)=O(n^3)$
+\end{itemize}
+Getting a tighter bound 
+\begin{itemize}
+    \item Underlying problem: $T(n)\leq cn^2$ does not work in the inductive proof (leads to contradiction), thus try to rewrite as \[
+    T(n)=O(n^2) = cn^2 + (\text{something positive})
+    \]\item Solution: strengthen hypothesis for inductive proof \[
+    T(n) \leq (\text{answer you want})- (\text{something positive})
+    \]
+        \item Show that $T(n)\leq cn^2-dn$ for $T(n)=4T(n/2)+n$
+    \begin{align*}
+        T(n) &= 4\textcolor{red}{T(n/2)}+n &&\text{(recurrence)}\\
+        &\leq 4(\textcolor{red}{c(n/2)^2-dn/2})+n &&\text{(inductive hyp.)}\\
+        &=cn^2-2dn + n &&\text{(simplification)}\\
+        &= cn^2 - dn -\underbrace{(dn-n)}_{\geq 0 \text{ for } d\geq 1} &&\text{(rearrangement)}\\
+        &\leq cn^2 - dn &&\text{(for $d\geq1$)}
+    \end{align*}
+    \item It thus follows that $T(n)=O(n^2)$
+\end{itemize}
+
+
+\subsubsection{Recursion trees}
+Basic methodology
+\begin{itemize}
+    \item A recursion tree is a convenient way to visualize what happens when a recurrence is iterated
+    \item Good for guessing asymptotic solutions to recurrences
+    \item Example: $T(n)=T(n/4)+T(n/2)+n^2$
+    \begin{itemize}
+        \item Tree with $n^2$ at the top, as this is the largest term
+    \end{itemize}
+\end{itemize}
+\underline{Example:}
+\begin{itemize}
+    \item Show that $T(n)\leq cn^2$ for $T(n)=T(n/2) + T(n/4) + n^2$
+    \begin{align*}
+        T(n)&= T(n/2)+T(n/4)+n^2 &&\text{(recurrence)}\\
+        &\leq c(n/2)^2 + c(n/4)^2 + n^2 &&\text{(inductive hyp.)}\\
+        &= 5cn^2 /16 +n^2 &&\text{(simplification)} \\
+        &= cn^2 - 11cn^2/16 +n^2 &&\text{(rearrangement)}\\
+        &\leq cn^2 &&\text{(for $c\geq 16/11$)}
+    \end{align*}
+    \item It thus follows that $T(n)=O(n^2)$
+\end{itemize}
+
+\subsubsection{Master method}
+To solve a class of recurrences that have the form \[
+T(n) + a T(n/b)+f(n)
+\]
+\begin{itemize}
+    \item Assumptions: 
+    \begin{itemize}
+        \item $a\geq 1$
+        \item $b>1$, and
+        \item $f(n)$ asymptotically positive
+    \end{itemize}
+    \item $T(n)$ describes running time of a divide-and-conquer algorithm 
+    \begin{itemize}
+        \item $a$ subproblems of size $n/b$ are solved recursively, each in time $T(n/b)$
+        \item $f(n)$ is the cost of dividing the problem and combining the solutions
+    \end{itemize}
+    \item Iterating the recurrence (expanding the tree) yields: 
+    \begin{align*}
+        T(n) &= f(n) + a T(n/b) \\
+        &= f(n) + af(n/b) + a^2T(n/b^2) \\
+        &=f(n) + af(n/b) + a^2f(n/b^2) + \cdots + \underbrace{a^{\log_n n-1}f(n/b^{\log_b n-1}) + a^{\log_b n }T(1)}_\text{leaves} \\
+        &= \sum_{i=0}^{\log_b n-1} a^i f(n/b^i) + \Theta(n^{\log_b a})
+    \end{align*}
+\end{itemize}
+
+Underlying intuitions
+\begin{itemize}
+    \item Three possible cases
+    \begin{enumerate}
+        \item Running time dominated by the cost at the leaves (case 1)
+        \item Running time evenly distributed throughout tree (case 2)
+        \item Running time dominated by the cost at the root (case 3)
+    \end{enumerate}
+    \item Solve recurrence by identifying dominant term
+    \item In each case compare $f(n)$ with $n^{\log_b a}$
+\end{itemize}
+
+
+\textbf{\underline{Master theorem, case 1:}} 
+\begin{itemize}
+    \item $f(n)=O(n^{\log_ba-\epsilon})$ for some constant $\epsilon>0$
+    \begin{itemize}
+        \item $f(n)$ grows polynomially slower than $n^{\log_b a}$ (by factor $n^\epsilon$)
+    \end{itemize}
+    \item The work at the leaves dominates: $T(n)= \Theta(n^{\log_ba})$
+\end{itemize}
+
+
+ 
+\textbf{\underline{Master theorem, case 2:}} 
+\begin{itemize}
+    \item $f(n)=\Theta(n^{\log_b a})$ (i.e., $f(n)$ and $n^{\log_b a}$ are asymptotically the same)
+    \item The work is evenly distributed: $T(n)=\Theta(n^{\log_b a} \log_b n)$
+\end{itemize}
+
+
+
+\textbf{\underline{Master theorem, case 3:}} 
+\begin{itemize}
+    \item $f(n)=\Omega(n^{\log_b a + \epsilon})$ for some constant $\epsilon>0$
+    \begin{itemize}
+        \item $f(n)$ grows polynomially faster than $n^{\log_b a}$ (by factor $n^\epsilon$)
+        \item Regularity: $\exists c < 1, \exists n_0 > 0, \forall n > n_0, (af(n/b) \leq cf(n))$
+    \end{itemize}
+    \item The work at the root dominates: $T(n) = \Theta(f(n))$
+\end{itemize}
+
+\textbf{\underline{General Strategy:}}
+\begin{itemize}
+    \item Extract $a,b$ and $f(n)$ from given recurrence
+    \item Determine $n^{\log_b a}$; asymptotically compare it with $f(n)$
+    \item Determine and apply the appropriate master theorem case
+    \item There are recurrences where no Master theorem case applies
+\end{itemize}

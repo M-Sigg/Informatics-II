@@ -1,0 +1,111 @@
+\documentclass[11pt]{article}
+\usepackage{titlesec}
+
+\setcounter{secnumdepth}{4}
+
+\parindent 0px % no automatic indentation
+
+\usepackage{amsmath,amssymb,amstext,amsthm,amsfonts}
+\usepackage{float}
+\usepackage[shortlabels]{enumitem}
+\usepackage[a4paper,lmargin={2cm},rmargin={2cm},tmargin={2.5cm},bmargin = {2.5cm},headheight = {4cm}]{geometry}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+%\usepackage[ngerman]{babel}
+\usepackage{lmodern}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xspace}
+\usepackage{empheq}
+\usepackage{mdframed}
+\usepackage{changepage}
+%\usepackage{hanging}
+\usepackage{romanbar}
+\usepackage{mathtools}
+\usepackage[hidelinks]{hyperref}
+
+\usepackage[headsepline]{scrlayer-scrpage} 
+\pagestyle{scrheadings} 
+\usepackage{titling}
+\usepackage{cancel}
+\usepackage{booktabs}
+
+\usepackage{algpseudocode}
+
+\usepackage{listings}
+\usepackage{xcolor} % Optional, for coloring code
+
+\usepackage[ruled,vlined]{algorithm2e}
+
+\lstset{ 
+  language=C,                     % the language of the code
+  basicstyle=\ttfamily,           % the size of the fonts that are used for the code
+  keywordstyle=\color{blue},      % keywords are color blue
+  commentstyle=\color{gray},      % comments are color gray
+  stringstyle=\color{red},        % strings are color red
+  numbers=left,                   % where to put the line-numbers; possible values are (none, left, right)
+  numberstyle=\tiny\color{gray},  % the style that is used for the line-numbers
+  stepnumber=1,                   % the step between two line-numbers. If it's 1, each line will be numbered
+  numbersep=5pt,                  % how far the line-numbers are from the code
+  backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+  showspaces=false,               % show spaces adding particular underscores
+  showstringspaces=false,         % underline spaces within strings
+  showtabs=false,                 % show tabs within strings adding particular underscores
+  frame=single,                   % adds a frame around the code
+  tabsize=4,                      % sets default tabsize to 4 spaces
+  captionpos=b,                   % sets the caption-position to bottom
+  breaklines=true,                % sets automatic line breaking
+  breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+  escapeinside={\%*}{*)}          % if you want to add LaTeX within your code
+}
+
+
+\setlist[itemize]{itemsep=0pt, topsep=2pt}
+\setlist[enumerate]{itemsep=0pt, topsep=2pt}
+
+\pagestyle{plain}
+
+% MACROS
+\newcommand{\ind}{\perp\!\!\!\!\perp} 
+
+
+\title{Informatics II}
+\author{Michael Sigg}
+\date{\today}
+
+\ohead{\theauthor}
+\ihead{Informatics II, Spring 24}
+
+
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+\newpage
+
+\section{Introduction, Sorting, Recursion}
+\input{sections/Introduction}
+
+\section{Complexity and Correctness}
+\input{sections/ComplexityAndCorrectness}
+
+\section{Divide and Conquer, Recurrences}
+\input{sections/DivideConquer}
+
+\section{Heap Sort, Quick Sort}
+\input{sections/HeapQuick}
+
+\section{Pointers, Abstract Data Types}
+\input{sections/Pointers, ADT}
+
+
+\newpage
+\section{Appendix: Mathematical Refreshers}
+\input{sections/Appendix}
+
+\end{document}
